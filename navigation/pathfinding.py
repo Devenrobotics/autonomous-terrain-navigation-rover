@@ -1,6 +1,12 @@
-from collections import deque        
+from collections import deque
 
-def find_path(grid, start, goal):    
+def find_path(grid, start, goal):
+
+    terrain_cost = {
+        0: 1, # Normal terrain
+        2: 5, # Sand
+        3: 20 # Dangerous slope
+    }
 
     rows = len(grid)
     cols = len(grid[0])
@@ -15,3 +21,30 @@ def find_path(grid, start, goal):
 
         if current == goal:
             return path
+
+        if current in visited:
+            continue
+
+        visited.add(current)
+
+        row, col = current
+
+        moves = [
+            (row+1,col),
+            (row-1,col),
+            (row,col+1),
+            (row,col-1)
+        ]
+
+        for r,c in moves:
+
+            if (
+                0 <= r < rows
+                and 0 <= c < cols
+                and grid[r][c] == 0
+            ):
+                queue.append(
+                    ((r,c), path+[(r,c)])
+                )
+
+    return None
