@@ -1,44 +1,66 @@
-from grid_map import grid, start
+from grid_map import grid, start, goal
 from astar import astar
-from exploration import choose_best_science_target
 from battery import route_cost
+from exploration import choose_best_science_target, unknown_cells
 
-target = choose_best_science_target()
+battery = 100
+current_position = start
 
-path = astar(grid, start, target)
+print("Starting Battery:", battery)
 
-cost = route_cost(path, grid)
+while battery > 0 and len(unknown_cells) > 0:
 
-for r in range(len(grid)):
+    target = choose_best_science_target(
+        grid,
+        current_position
+    )
 
-    row_string = ""
+    if target is None:
+        break
 
-    for c in range(len(grid[0])):
+    path = astar(grid, current_position, target)
 
-        pos = (r, c)
+    if path is None:
+        break
 
-        if pos == start:
-            row_string += "R "
+    cost = route_cost(path, grid)
 
-        elif pos == target:
-            row_string += "T "
+    if cost > battery:
+        print("Not enough battery to reach target.")
+        break
 
-        elif path and pos in path:
-            row_string += "* "
+    battery -= cost
 
-        elif grid[r][c] == 1:
-            row_string += "X "
+    science_value = unknown_cells[target]
 
-        elif grid[r][c] == 2:
-            row_string += "S "
+    print("\nTarget:", target)
+    print("Science Value:", science_value)
+    print("Battery Cost:", cost)
+    print("Battery Remaining:", battery)
 
-        elif grid[r][c] == 3:
-            row_string += "^ "
+    current_position = target
 
-        else:
-            row_string += ". "
+    del unknown_cells[target]
 
-    print(row_string)
+print("\nReturning to base...")
 
-print("\nChosen target:", target)
-print("Battery cost:", cost)
+return_path = astar(grid, current_position, goal)
+
+if return_path:
+
+    return_cost = route_cost(return_path, grid)
+
+    if return_cost <= battery:
+
+        battery -= return_cost
+
+        print("Returned successfully.")
+        print("Battery Remaining:", battery)
+
+    else:
+
+        print("Not enough battery to return.")
+
+else:
+
+    print("No path to base.")
