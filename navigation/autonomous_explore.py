@@ -1,10 +1,13 @@
 from grid_map import grid, start
 from astar import astar
-from exploration import unknown_cells, choose_target
+from exploration import choose_best_science_target
+from battery import route_cost
 
-target = choose_target(unknown_cells)
+target = choose_best_science_target()
 
 path = astar(grid, start, target)
+
+cost = route_cost(path, grid)
 
 for r in range(len(grid)):
 
@@ -37,5 +40,5 @@ for r in range(len(grid)):
 
     print(row_string)
 
-print("\nChosen target:")
-print(target)
+print("\nChosen target:", target)
+print("Battery cost:", cost)

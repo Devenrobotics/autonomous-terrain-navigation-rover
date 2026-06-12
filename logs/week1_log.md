@@ -9,6 +9,10 @@ Implemented a basic pathfinding system.
 
 Recovered prjoect files using Git history after a merge conflict.
 
+Added an autonomous exploration target selection portion for enhancement.
+
+Developed a target-selection system that balances scientific return against energy consumption.
+
 Next goal: 
 Visualize navigation and begin terrain-aware routing.
 

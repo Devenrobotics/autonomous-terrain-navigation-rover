@@ -1,6 +1,6 @@
-from exploration import unknown_cells, choose_target
+from exploration import choose_best_science_target
 
-best_target = choose_target(unknown_cells)
+best_target = choose_best_science_target()
 
 print("Best target:")
 print(best_target)
