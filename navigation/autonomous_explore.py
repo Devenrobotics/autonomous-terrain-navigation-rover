@@ -1,12 +1,58 @@
 from grid_map import grid, start, goal
 from astar import astar
 from battery import route_cost
-from exploration import choose_best_science_target, unknown_cells
+from exploration import (
+    choose_best_science_target,
+    unknown_cells,
+    discover_science,
+    print_memory
+)
+
+known_map = [
+    [0, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1]
+]
+
+
+def scan_surroundings(position):
+
+    row, col = position
+
+    directions = [
+        (0, 0),
+        (1, 0),
+        (-1, 0),
+        (0, 1),
+        (0, -1)
+    ]
+
+    for dr, dc in directions:
+
+        r = row + dr
+        c = col + dc
+
+        if 0 <= r < len(grid) and 0 <= c < len(grid[0]):
+            known_map[r][c] = grid[r][c]
+
+
+def print_known_map():
+
+    print("\nKnown Map:")
+
+    for row in known_map:
+        print(row)
+
 
 battery = 100
 current_position = start
 
+scan_surroundings(current_position)
+
 print("Starting Battery:", battery)
+print_known_map()
 
 while battery > 0 and len(unknown_cells) > 0:
 
@@ -31,16 +77,22 @@ while battery > 0 and len(unknown_cells) > 0:
 
     battery -= cost
 
-    science_value = unknown_cells[target]
+    current_position = target
+
+    scan_surroundings(current_position)
+
+    discovered_value = discover_science(target)
 
     print("\nTarget:", target)
-    print("Science Value:", science_value)
+    print("Discovered Science Value:", discovered_value)
     print("Battery Cost:", cost)
     print("Battery Remaining:", battery)
 
-    current_position = target
+    print_known_map()
 
-    del unknown_cells[target]
+    unknown_cells.remove(target)
+
+print_memory()
 
 print("\nReturning to base...")
 

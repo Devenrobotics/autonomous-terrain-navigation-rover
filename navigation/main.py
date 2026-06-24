@@ -1,3 +1,1 @@
-from autonomous_explore import run_mission
-
-run_mission()
+import autonomous_explore
